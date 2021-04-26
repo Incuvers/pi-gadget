@@ -6,11 +6,10 @@ description: |
  This gadget snap supports the Raspberry Pi 4
 type: gadget
 base: core20
+assumes: [kernel-assets]
 architectures:
   - build-on: arm64
     run-on: arm64
-
-
 
 package-repositories:
   - type: apt
@@ -19,7 +18,15 @@ package-repositories:
 confinement: strict
 grade: stable
 parts:
+  add-ppa:
+    plugin: nil
+    build-packages:
+      - software-properties-common
+    override-pull: |
+      sudo add-apt-repository --yes ppa:snappy-dev/image
+      sudo apt update
   gadget:
+    after: [add-ppa]
     plugin: nil
     source: .
     override-build: |
@@ -75,6 +82,7 @@ parts:
       - flex
       - libssl-dev
   psplash-local:
+    after: [add-ppa]
     plugin: dump
     prime: [-*]
     source: .
