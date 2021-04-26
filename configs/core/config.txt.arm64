@@ -17,11 +17,11 @@ enable_uart=1
 
 # Enable the FKMS ("Fake" KMS) graphics overlay, and allocate 128Mb to the
 # GPU memory
-dtoverlay=vc4-fkms-v3d,cma-128
+#dtoverlay=vc4-fkms-v3d,cma-128
 
 # Enable audio output, I2C and SPI interfaces on the GPIO header
-dtparam=audio=on
-dtparam=i2c_arm=on
+#dtparam=audio=on
+#dtparam=i2c_arm=on
 dtparam=spi=on
 
 # Prior versions of Ubuntu Core customized the on-board LEDs so that the green
@@ -29,3 +29,19 @@ dtparam=spi=on
 # Uncomment the following lines if you wish to restore these customizations
 #dtparam=act_led_trigger=heartbeat
 #dtparam=pwr_led_trigger=mmc0
+
+
+dtparam=audio=off
+dtoverlay=pi3-disable-bt
+dtoverlay=vc4-kms-v3d
+
+# for the screen
+max_usb_connection=1
+hdmi_group=2
+hdmi_mode=87
+hdmi_cvt 1024 600 60 6 0 0 0
+config_hdmi_boost=10
+hdmi_drive=1
+overscan_right=24
+display_hdmi_rotate=1
+

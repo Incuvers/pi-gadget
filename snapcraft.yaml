@@ -1,16 +1,19 @@
-name: pi
+name: pi-iris
 version: 20-1
-summary: Raspberry Pi gadget
+summary: Raspberry Pi gadget for IRIS
 description: |
-  Support files for booting Raspberry Pi.
-  This gadget snap supports the Raspberry Pi 2B, 3B, 3A+, 3B+, 4B, Compute
-  Module 3, and the Compute Module 3+ universally.
+ Support files for booting Raspberry Pi configured for IRIS.
+ This gadget snap supports the Raspberry Pi 4
 type: gadget
 base: core20
 assumes: [kernel-assets]
 architectures:
-  - build-on: [amd64, arm64]
+  - build-on: arm64
     run-on: arm64
+
+package-repositories:
+  - type: apt
+    ppa: snappy-dev/image
 
 confinement: strict
 grade: stable
@@ -31,12 +34,12 @@ parts:
       # unconditionally set the arch-triplet since this snapcraft.yaml will 
       # always be used to produce an armhf snap
       BUILD_ARCH_TRIPLET=aarch64-linux-gnu
-
       OPTIONAL_ARGS="SOURCES_HOST=\"./helpers/cross-sources.list\" SOURCES_D_HOST=\"./helpers\""
       make -C $SNAPCRAFT_PART_SRC core \
         DESTDIR=${SNAPCRAFT_PART_INSTALL} \
         ARCH="$(dpkg-architecture -t $BUILD_ARCH_TRIPLET -q DEB_HOST_ARCH)" \
         ${OPTIONAL_ARGS:-}
+      rm $SNAPCRAFT_PART_INSTALL/boot-assets/uboot_*.bin
     prime:
       - boot-assets/*
       - uboot.conf
@@ -46,6 +49,38 @@ parts:
       - lsb-release
       - dpkg-dev
       - make
+  noserial-uboot:
+    plugin: nil
+    source: .
+    override-build: |
+      set -x
+      # get sources
+      sed -i 's/# deb-src/deb-src/' /etc/apt/sources.list
+      apt update
+      apt-get source u-boot-rpi
+      # patch and build
+      cd u-boot-*
+      # default to BOOTDELAY=-2
+      sed -i '/^config BOOTDELAY/!b;n;n;s/default 2/default -2/' common/Kconfig
+      # only build pi binaries
+      for i in rpi_3 rpi_4 rpi_arm64; do
+        /usr/bin/echo -e "arm64\trpi\t\t$i\t\tu-boot.bin"
+      done >debian/targets
+      # build
+      fakeroot debian/rules binary
+      cd -
+      # extract binaries
+      dpkg -x u-boot-rpi_*_arm64.deb unpack
+      mkdir -p $SNAPCRAFT_PART_INSTALL/boot-assets
+      for dir in unpack/usr/lib/u-boot/*; do
+        cp -av $dir/u-boot.bin $SNAPCRAFT_PART_INSTALL/boot-assets/uboot_${dir##*/}.bin
+      done
+    build-packages:
+      - bison
+      - debhelper
+      - dpkg-dev
+      - flex
+      - libssl-dev
   psplash-local:
     after: [add-ppa]
     plugin: dump
@@ -216,3 +251,4 @@ slots:
   spidev1:
     interface: spi
     path: /dev/spidev0.1
+
