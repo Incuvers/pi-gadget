@@ -1,6 +1,6 @@
 [pi4]
 kernel=uboot_rpi_4.bin
-max_framebuffers=2
+max_framebuffers=1
 
 [pi2]
 kernel=uboot_rpi_2.bin
@@ -12,12 +12,11 @@ kernel=uboot_rpi_3.bin
 arm_64bit=1
 device_tree_address=0x02000000
 
-# Enable the serial pins
-enable_uart=1
 
 # Enable the FKMS ("Fake" KMS) graphics overlay, and allocate 128Mb to the
 # GPU memory
 #dtoverlay=vc4-fkms-v3d,cma-128
+#dtoverlay=vc4-kms-v3d
 
 # Enable audio output, I2C and SPI interfaces on the GPIO header
 #dtparam=audio=on
@@ -30,18 +29,16 @@ dtparam=spi=on
 #dtparam=act_led_trigger=heartbeat
 #dtparam=pwr_led_trigger=mmc0
 
-
+enable_uart=1
 dtparam=audio=off
 dtoverlay=pi3-disable-bt
-dtoverlay=vc4-kms-v3d
-
-# for the screen
 max_usb_connection=1
+
+framebuffer_depth=32
+hdmi_cvt=1024 600 60 6 0 0 0
 hdmi_group=2
 hdmi_mode=87
-hdmi_cvt 1024 600 60 6 0 0 0
 config_hdmi_boost=10
 hdmi_drive=1
 overscan_right=24
-display_hdmi_rotate=1
-
+display_rotate=1
