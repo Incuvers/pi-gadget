@@ -43,7 +43,7 @@ volumes:
         # XXX: make auto-grow to partition
         size: 1500M
         defaults:
-  system:
-    service:
-      console-conf:
-        disable: true
+system:
+  service:
+    console-conf:
+      disable: true
