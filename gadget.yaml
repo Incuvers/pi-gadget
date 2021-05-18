@@ -42,9 +42,19 @@ volumes:
         type: 83,0FC63DAF-8483-4772-8E79-3D69D8477DE4
         # XXX: make auto-grow to partition
         size: 1500M
-        defaults:
+
+
+
 defaults:
   system:
     service:
       console-conf:
         disable: true
+    pi-config:
+      display-rotate: 1
+      hdmi-cvt: "1024 600 60 6 0 0 0"
+      hdmi-group: 2
+      hdmi-mode: 87
+      hdmi-drive: 1
+      overscan-right: 24
+      framebuffer-depth: 32 
