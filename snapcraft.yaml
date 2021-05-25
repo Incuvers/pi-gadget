@@ -1,6 +1,6 @@
-name: pi-iris
+name: iris-gadget
 version: 20-1
-summary: Raspberry Pi gadget for IRIS
+summary: Raspberry Pi 4 gadget for IRIS
 description: |
  Support files for booting Raspberry Pi configured for IRIS.
  This gadget snap supports the Raspberry Pi 4
