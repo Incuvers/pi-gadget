@@ -43,13 +43,27 @@ volumes:
         # XXX: make auto-grow to partition
         size: 1500M
 
-
+# auto connect these:
+#connections:
+#  - plug:  
+#  - slot: bt-serial:
+#    interface: serial-port
+#    path: /dev/ttyAMA0
+#  spidev0:
+#    interface: spi
+#    path: /dev/spidev0.0
+#
+#  - plug: <Snap ID of application snap>:serial-port
+#    slot: <Snap ID of gadget snap>:serial-port
+#  - plug: <Snap ID of application snap>:joystick
+#    slot: system:joystick
 
 defaults:
   system:
     service:
       console-conf:
-        disable: true
+        disable: false
+        #disable: true
     pi-config:
       display-rotate: 1
       hdmi-cvt: "1024 600 60 6 0 0 0"
